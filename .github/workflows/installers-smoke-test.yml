@@ -1,0 +1,92 @@
+﻿name: installers-smoke-test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - install-openclaw.ps1
+      - install-openclaw.sh
+      - 一键安装OpenClaw.cmd
+      - 一键安装OpenClaw.sh
+      - 一键安装OpenClaw.command
+      - 一键安装OpenClaw-系统选择.cmd
+      - 一键安装OpenClaw-系统选择.sh
+      - 一键安装OpenClaw-系统选择.command
+      - openclaw-installer-selector.cmd
+      - openclaw-installer-selector.sh
+      - openclaw-installer-selector.command
+      - scripts/build-universal-package.ps1
+      - .github/workflows/installers-smoke-test.yml
+  pull_request:
+    paths:
+      - install-openclaw.ps1
+      - install-openclaw.sh
+      - 一键安装OpenClaw.cmd
+      - 一键安装OpenClaw.sh
+      - 一键安装OpenClaw.command
+      - 一键安装OpenClaw-系统选择.cmd
+      - 一键安装OpenClaw-系统选择.sh
+      - 一键安装OpenClaw-系统选择.command
+      - openclaw-installer-selector.cmd
+      - openclaw-installer-selector.sh
+      - openclaw-installer-selector.command
+      - scripts/build-universal-package.ps1
+      - .github/workflows/installers-smoke-test.yml
+
+jobs:
+  smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Windows PowerShell installer smoke test
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $env:OPENCLAW_TEST_MODE = "1"
+          $env:OPENCLAW_NONINTERACTIVE = "1"
+          powershell -NoProfile -ExecutionPolicy Bypass -File .\install-openclaw.ps1
+
+      - name: Windows CMD wrapper smoke test
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          set OPENCLAW_TEST_MODE=1
+          set OPENCLAW_NONINTERACTIVE=1
+          call .\一键安装OpenClaw.cmd
+
+      - name: Windows selector smoke test
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          set OPENCLAW_TEST_MODE=1
+          set OPENCLAW_NONINTERACTIVE=1
+          set OPENCLAW_SELECTOR_CHOICE=auto
+          call .\一键安装OpenClaw-系统选择.cmd
+          call .\openclaw-installer-selector.cmd
+
+      - name: Unix installer smoke test
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          chmod +x ./install-openclaw.sh ./一键安装OpenClaw.sh ./一键安装OpenClaw.command
+          OPENCLAW_TEST_MODE=1 OPENCLAW_NONINTERACTIVE=1 ./install-openclaw.sh
+          OPENCLAW_TEST_MODE=1 OPENCLAW_NONINTERACTIVE=1 ./一键安装OpenClaw.sh
+          OPENCLAW_TEST_MODE=1 OPENCLAW_NONINTERACTIVE=1 ./一键安装OpenClaw.command
+
+      - name: Unix selector smoke test
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          chmod +x ./一键安装OpenClaw-系统选择.sh ./一键安装OpenClaw-系统选择.command ./openclaw-installer-selector.sh ./openclaw-installer-selector.command
+          OPENCLAW_TEST_MODE=1 OPENCLAW_NONINTERACTIVE=1 OPENCLAW_SELECTOR_CHOICE=auto ./一键安装OpenClaw-系统选择.sh
+          OPENCLAW_TEST_MODE=1 OPENCLAW_NONINTERACTIVE=1 OPENCLAW_SELECTOR_CHOICE=auto ./一键安装OpenClaw-系统选择.command
+          OPENCLAW_TEST_MODE=1 OPENCLAW_NONINTERACTIVE=1 OPENCLAW_SELECTOR_CHOICE=auto ./openclaw-installer-selector.sh
+          OPENCLAW_TEST_MODE=1 OPENCLAW_NONINTERACTIVE=1 OPENCLAW_SELECTOR_CHOICE=auto ./openclaw-installer-selector.command
