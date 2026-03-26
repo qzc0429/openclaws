@@ -38,7 +38,6 @@ WizardStyle=modern
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
-Name: "chinesesimp"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
 
 [Files]
 Source: "..\install-openclaw.ps1"; Flags: dontcopy
