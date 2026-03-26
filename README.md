@@ -94,7 +94,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build-inno-package
 1. 进入 `Actions`
 2. 选择 `deploy-download-page`
 3. 点击 `Run workflow`
-4. 在仓库 `Settings -> Pages` 确认来源为 `GitHub Actions`
+4. 在仓库 `Settings -> Pages` 确认来源为 `Deploy from a branch`，分支选择 `gh-pages`（`/root`）
 5. 对外使用统一下载链接：`https://<owner>.github.io/<repo>/download/`
 
 ## 一键推送并触发发布（推荐）
