@@ -1,5 +1,15 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 set -euo pipefail
+
+temp_installer=""
+
+cleanup_temp_installer() {
+  if [[ -n "${temp_installer:-}" && -f "$temp_installer" ]]; then
+    rm -f "$temp_installer"
+  fi
+}
+
+trap cleanup_temp_installer EXIT
 
 is_truthy() {
   local value="${1:-}"
@@ -114,9 +124,7 @@ main() {
 
   install_node_if_needed
 
-  local temp_installer
   temp_installer="$(mktemp "${TMPDIR:-/tmp}/openclaw-install.XXXXXX.sh")"
-  trap 'rm -f "$temp_installer"' EXIT
 
   if is_truthy "$TEST_MODE"; then
     cat >"$temp_installer" <<'EOF'

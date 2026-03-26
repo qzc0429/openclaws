@@ -11,7 +11,8 @@ esac
 
 normalize_choice() {
   local raw="${1:-}"
-  case "${raw,,}" in
+  raw="$(printf '%s' "$raw" | tr '[:upper:]' '[:lower:]')"
+  case "$raw" in
     1|auto) echo "auto" ;;
     2|windows|win) echo "windows" ;;
     3|mac|macos|darwin) echo "macos" ;;
